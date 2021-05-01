@@ -1,0 +1,42 @@
+--------------------------------------------------------
+--  File created - суббота-мая-01-2021   
+--------------------------------------------------------
+--------------------------------------------------------
+--  DDL for Package Body MOVIESFUNCTIONS
+--------------------------------------------------------
+
+  CREATE OR REPLACE PACKAGE BODY "HR"."MOVIESFUNCTIONS" AS
+FUNCTION SEARCH(
+searchfor in varchar2,
+searchfrom in varchar2
+)
+return arrID
+IS
+v_query varchar2(200) := 'SELECT id from moviescopy where ' || searchfrom || ' like ''%' || searchfor || '%'' ORDER BY ID';
+ids arrID;
+TYPE curtype IS REF CURSOR;
+c1      curtype;
+v_count number;
+
+begin
+open c1 for v_query;
+ids := arrId();
+v_count := 1;
+
+loop
+ids.extend(1);
+fetch c1 into ids(v_count);
+
+if(ids(v_count) is null)
+then exit;
+end if;
+v_count:= v_count + 1;
+
+end loop;
+close c1;
+ids.trim;
+return ids;
+END SEARCH;
+END MOVIESFUNCTIONS;
+
+/

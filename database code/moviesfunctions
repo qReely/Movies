@@ -1,0 +1,13 @@
+--------------------------------------------------------
+--  File created - суббота-мая-01-2021   
+--------------------------------------------------------
+--------------------------------------------------------
+--  DDL for Package MOVIESFUNCTIONS
+--------------------------------------------------------
+
+  CREATE OR REPLACE PACKAGE "HR"."MOVIESFUNCTIONS" AS
+    Function search(searchfor varchar2, searchfrom varchar2)
+    return arrId;
+END MOVIESFUNCTIONS;
+
+/

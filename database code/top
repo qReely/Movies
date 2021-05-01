@@ -1,0 +1,37 @@
+--------------------------------------------------------
+--  File created - суббота-мая-01-2021   
+--------------------------------------------------------
+--------------------------------------------------------
+--  DDL for Procedure TOP
+--------------------------------------------------------
+set define off;
+
+  CREATE OR REPLACE PROCEDURE "HR"."TOP" ( 
+v_number IN number,
+v_line OUT varchar2)
+is
+v_title varchar2(120);
+v_vote varchar2(10);
+v_count number(30);
+
+cursor c1 is
+select * from
+(select title, vote_average, vote_count
+from moviescopy where vote_count > 1000 
+order by vote_average desc) 
+where rownum <= v_number;
+
+
+begin
+open c1;
+    for i in 1..v_number loop
+    if c1%NOTFOUND THEN -- fetch failed
+          EXIT;
+    END IF;
+    fetch c1 into v_title, v_vote, v_count;
+    v_line := v_line || chr(10) || i || ') ' || v_title || ', Average vote: ' || v_vote || ', Votes: ' || v_count;
+    end loop;
+close c1;
+end;
+
+/

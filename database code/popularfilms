@@ -1,0 +1,39 @@
+--------------------------------------------------------
+--  File created - суббота-мая-01-2021   
+--------------------------------------------------------
+--------------------------------------------------------
+--  DDL for Procedure POPULARFILMS
+--------------------------------------------------------
+set define off;
+
+  CREATE OR REPLACE PROCEDURE "HR"."POPULARFILMS" (
+v_total in number,
+v_line out varchar2
+)
+is
+Type popular is Record (
+title varchar(400),
+id number,
+pop varchar2(30)
+);
+
+v_rec popular;
+
+cursor c1 is
+select * from (
+select title,id,popularity
+from moviescopy
+order by cast(substr(popularity,0,regexp_instr(popularity, '\D') - 1) as number) desc)
+where rownum <= v_total;
+
+begin
+open c1;
+for i in 1..v_total loop
+exit when c1%notfound;
+fetch c1 into v_rec;
+v_line := v_line || chr(10) || i || ') ' || v_rec.title || ', id: ' || v_rec.id || ', popularity: ' || v_rec.pop;
+end loop;
+close c1;
+end;
+
+/

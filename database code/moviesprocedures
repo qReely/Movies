@@ -1,0 +1,15 @@
+--------------------------------------------------------
+--  File created - суббота-мая-01-2021   
+--------------------------------------------------------
+--------------------------------------------------------
+--  DDL for Package MOVIESPROCEDURES
+--------------------------------------------------------
+
+  CREATE OR REPLACE PACKAGE "HR"."MOVIESPROCEDURES" AS
+   PROCEDURE top (v_number number);	  
+   PROCEDURE popularFilms(v_total number);
+   PROCEDURE dynamicCall(functioncall varchar2);
+   PROCEDURE max(columnname varchar2);
+END moviesProcedures;
+
+/
