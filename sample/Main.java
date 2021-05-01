@@ -457,7 +457,6 @@ public class Main extends Application {
                     + "','" + tempData.getProduction_countries() + "','" + tempData.getRelease_date() + "','" + tempData.getRevenue() + "','" + tempData.getRuntime()
                     + "','" + tempData.getSpoken_languages() + "','" + tempData.getStatus() + "','" + tempData.getTagline() + "','" + tempData.getVote_average()
                     + "','" + tempData.getVote_count() + "')");
-            System.out.println(tempData.getTitle());
             dataList.add(tempData);
             filteredList = new FilteredList<>(dataList, p -> true);
             sortedData = new SortedList<>(filteredList);
@@ -640,7 +639,6 @@ public class Main extends Application {
                 data.setVote_average(0);
                 data.setVote_count(0);
                 data.setRelease_date("01.01.21");
-                System.out.println(data.getRelease_date().length());
             }
             this.data = data;
             if(this.data.getRelease_date().length() > 8){
