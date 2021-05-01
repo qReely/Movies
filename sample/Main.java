@@ -320,12 +320,18 @@ public class Main extends Application {
 
 
     public void setImages(ObservableList<DataBase> list) throws SQLException {
-        ResultSet res = statement.executeQuery("Select image from " + table + " where image is not null");
+        ResultSet res = statement.executeQuery("Select id, image from " + table + " where image is not null");
         for(int i = 0; i < list.size(); i++){
             if(!res.next()) break;
+            int id = res.getInt("id");
             Blob blob = res.getBlob("image");
             byte[] b = blob.getBytes(1, (int)blob.length());
-            list.get(i).setImage(new ImageView(new Image(new ByteArrayInputStream(b))));
+            for(int j = 0; j < list.size(); j++){
+                if(list.get(j).getId() == id){
+                    list.get(j).setImage(new ImageView(new Image(new ByteArrayInputStream(b))));
+                    break;
+                }
+            }
         }
     }
 
