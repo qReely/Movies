@@ -1,0 +1,97 @@
+--------------------------------------------------------
+--  File created - суббота-мая-01-2021   
+--------------------------------------------------------
+--------------------------------------------------------
+--  DDL for Package Body MOVIESPROCEDURES
+--------------------------------------------------------
+
+  CREATE OR REPLACE PACKAGE BODY "HR"."MOVIESPROCEDURES" AS
+   PROCEDURE top(v_number number)is
+    v_title varchar2(120);
+    v_vote varchar2(10);
+    v_count number(30);
+
+    cursor c1 is
+    select * from
+    (select title, vote_average, vote_count
+    from moviescopy where vote_count > 1000 
+    order by vote_average desc) 
+    where rownum <= v_number;
+
+
+    begin
+    open c1;
+        for i in 1..v_number loop
+        if c1%NOTFOUND THEN -- fetch failed
+            EXIT;
+        END IF;
+        fetch c1 into v_title, v_vote, v_count;
+        DBMS_OUTPUT.PUT_LINE(i || ') ' || v_title || ', Average vote: ' || v_vote || ', Votes: ' || v_count);
+        end loop;
+    close c1;
+    end top;
+
+   PROCEDURE popularFilms (v_total number) 
+   is
+    Type popular is Record (
+    title varchar(400),
+    id number,
+    pop varchar2(30)
+    );
+
+    v_rec popular;
+
+    cursor c1 is
+    select * from (
+    select title,id,popularity
+    from moviescopy
+    order by cast(substr(popularity,0,regexp_instr(popularity, '\D') - 1) as number) desc)
+    where rownum <= v_total;
+
+    begin
+    open c1;
+    for i in 1..v_total loop
+        exit when c1%notfound;
+        fetch c1 into v_rec;
+        dbms_output.put_line(i || ') ' || v_rec.title || ', id: ' || v_rec.id || ', popularity: ' || v_rec.pop);
+    end loop;
+    close c1;
+    end popularFilms;
+    
+    PROCEDURE DYNAMICCALL(
+        functioncall varchar2
+        )AS 
+    BEGIN
+        EXECUTE IMMEDIATE
+        'DECLARE v_array arrID;
+         BEGIN  v_array := ' || RTRIM(functioncall, ';') || ';
+  
+        for i in 1..v_array.count loop
+        dbms_output.put(v_array(i));
+        if(i < v_array.count)
+        then dbms_output.put('', '');
+        end if;
+        end loop;
+        DBMS_OUTPUT.NEW_LINE;
+        END;';
+    END DYNAMICCALL;
+    
+    PROCEDURE MAX(
+        columnname varchar2
+        ) AS 
+        v_query varchar2(200) := 'SELECT title, id, '|| columnname || ' from moviescopy where '|| columnname || ' = (Select max('|| columnname || ') from moviescopy)';
+        type cur_type is ref cursor;
+        c1 cur_type;
+        v_id number;
+        v_title varchar(400);
+        v_col number;
+    BEGIN
+        open c1 for v_query;
+        fetch c1 into v_title, v_id, v_col;
+        dbms_output.put_line(v_title || ', ID: ' || v_id || ', ' || columnname || ': ' || v_col);
+        close c1;
+    END MAX;
+    
+END moviesProcedures;
+
+/
